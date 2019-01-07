@@ -257,6 +257,10 @@ def _crop_like(inputs, attrs):
     new_attrs["axis"] = [2, 3]
     return _get_nnvm_op('slice_like')(inputs[0], inputs[1], **new_attrs)
 
+def _slice_like(inputs, attrs):
+    op_name, new_attrs = 'slice_like', {}
+    new_attrs['axis'] = attrs.get('axes', [])
+    return _get_nnvm_op(op_name)(*inputs, **new_attrs)
 
 def _expand_dims(inputs, attrs):
     op_name, new_attrs = 'expand_dims', {}
@@ -303,7 +307,7 @@ _identity_list = ['__add_scalar__', '__add_symbol__', '__div_scalar__',
                   'broadcast_sub', 'broadcast_to', 'cast', 'elemwise_add',
                   'elemwise_div', 'elemwise_mul', 'elemwise_sub', 'exp',
                   'flatten', 'log', 'log_softmax', 'max', 'min', 'negative',
-                  'ones_like', 'relu', 'sigmoid', 'slice_like', 'softmax',
+                  'ones_like', 'relu', 'sigmoid', 'softmax',
                   'sum', 'tanh', 'transpose', 'zeros_like', 'gather_nd',
                   'reshape_like']
 
@@ -338,6 +342,7 @@ _convert_map = {
     'Pooling_v1'    : _pooling,
     'Reshape'       : _reshape,
     'SliceChannel'  : _split,
+    'slice_like'    : _slice_like,
     'split'         : _split,
     'Softmax'       : _rename('softmax'),
     'SoftmaxActivation' : _softmax_activation,
